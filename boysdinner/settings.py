@@ -26,12 +26,12 @@ SECRET_KEY = 'django-insecure-cuyrj04=9#p%&zx_bd5+fp_=&4znu3y%^x-1h#6_5)cda^ff%j
 DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() == "true"
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-insecure-change-me")
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+hosts = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost")
+ALLOWED_HOSTS = [h.strip() for h in hosts.split(",") if h.strip()]
 
-
-CSRF_TRUSTED_ORIGINS = [
-    o.strip() for o in os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if o.strip()
-]
+# (for admin login CSRF; not needed for the 400, but add now)
+origins = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "")
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in origins.split(",") if o.strip()]
 
 # Application definition
 
