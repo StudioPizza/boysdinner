@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Boys Dinner — Dashboard</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root{
+      --bg:#0c0d10; --surface:#15171d; --border:#252831;
+      --text:#e6e8ee; --muted:#9aa0a6; --link:#b9d4ff;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto}
+    .wrap{max-width:900px;margin:0 auto;padding:16px}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin:12px 0}
+    h1,h2{margin:0 0 6px 0}
+    .muted{color:var(--muted);font-size:.95rem}
+    ul{list-style:none;margin:0;padding:0}
+    li{padding:8px 0;border-bottom:1px solid var(--border)}
+    li:last-child{border-bottom:0}
+    label{display:flex;gap:8px;align-items:center;cursor:pointer}
+    .btn{padding:.5rem .9rem;border:1px solid var(--border);background:#181b22;color:var(--text);border-radius:8px;cursor:pointer}
+    .row{display:flex;justify-content:space-between;gap:12px}
+    .pill{border:1px solid var(--border);border-radius:999px;padding:.15rem .5rem;color:var(--muted);font-size:.8rem}
+    a{color:var(--link);text-decoration:none}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="card">
+      <h1>Dashboard <span class="pill">Admin</span></h1>
+      {% if last_dinner %}
+        <div class="muted">Last dinner: {{ last_dinner.date }} — host {{ last_dinner.host.name }}</div>
+      {% else %}
+        <div class="muted">No dinners recorded yet.</div>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h2>Who’s up next?</h2>
+      {% if eligible_pool %}
+        <form method="post" action="{% url 'assign_next_host' %}">
+          {% csrf_token %}
+          <ul>
+            {% for b in eligible_pool %}
+              <li><label><input type="radio" name="boy_id" value="{{ b.id }}" required> {{ b.name }}</label></li>
+            {% endfor %}
+          </ul>
+          <div style="margin-top:10px"><button class="btn" type="submit">Set next host</button></div>
+        </form>
+        <div class="muted" style="margin-top:8px;">
+          {% if pool_is_strict %}
+            Eligible = hasn’t hosted this year.
+          {% else %}
+            Everyone has hosted — showing all (fewest all-time hosts first).
+          {% endif %}
+        </div>
+      {% else %}
+        <div class="muted">Add members in admin.</div>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h2>Recent history</h2>
+      {% if history %}
+        <ul>
+          {% for d in history %}
+            <li class="row">
+              <span>{{ d.date }} — {{ d.restaurant|default:"TBD" }}</span>
+              <span class="muted">{{ d.host.name }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="muted">No dinners recorded.</div>
+      {% endif %}
+    </div>
+
+  </div>
+</body>
+</html>

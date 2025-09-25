@@ -1,0 +1,73 @@
+<body style="margin:0;background:#0b0d11;font-family:system-ui,-apple-system,Segoe UI,Roboto">
+  <!-- Center vertically & horizontally -->
+  <div style="min-height:100dvh;display:grid;place-content:center;padding:20px">
+    <!-- Tighter container -->
+    <h1 style="color:#dbe2ea">Boys dinner club</h1>
+    <div style="width:min(820px,92vw);display:grid;gap:12px">
+
+      <!-- Upcoming (if any) -->
+      <div style="background:#151922;border:1px solid #242a36;border-radius:12px;padding:16px 18px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.35)">
+        {% if upcoming %}
+          <div style="color:#9aa4b2;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem;margin:0 0 4px">Upcoming dinner</div>
+          <div style="color:#e8edf2;font-size:clamp(1.6rem,5vw,2.6rem);font-weight:800;line-height:1.1;margin:2px 0 4px">{{ upcoming.host.name }}</div>
+          <div style="color:#b6beca;font-size:.95rem">{{ upcoming.date }}{% if upcoming.restaurant %} · {{ upcoming.restaurant }}{% endif %}</div>
+        {% else %}
+          <div style="color:#9aa4b2;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem">No upcoming dinner scheduled</div>
+              <div style="background:#151922;border:1px solid #242a36;border-radius:12px;padding:16px 18px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.35)">
+        <div style="color:#9aa4b2;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem;margin:0 0 4px">Next host (pending)</div>
+        <div style="color:#e8edf2;font-size:clamp(1.6rem,5vw,2.6rem);font-weight:800;line-height:1.1;margin:2px 0 4px">{{ next_placeholder.host.name }}</div>
+        <div style="color:#b6beca;font-size:.95rem">Date: TBD — set it in admin when decided.</div>
+      </div>
+        {% endif %}
+      </div>
+
+      <!-- Next host (pending)
+      {% if next_placeholder %}
+      <div style="background:#151922;border:1px solid #242a36;border-radius:12px;padding:16px 18px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.35)">
+        <div style="color:#9aa4b2;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem;margin:0 0 4px">Next host (pending)</div>
+        <div style="color:#e8edf2;font-size:clamp(1.6rem,5vw,2.6rem);font-weight:800;line-height:1.1;margin:2px 0 4px">{{ next_placeholder.host.name }}</div>
+        <div style="color:#b6beca;font-size:.95rem">Date: TBD — set it in admin when decided.</div>
+      </div>
+      {% endif %}
+      -->
+
+      <!-- Eligible pool only if nothing is set -->
+      {% if not upcoming and not next_placeholder %}
+      <div style="background:#151922;border:1px solid #242a36;border-radius:12px;padding:16px 18px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.35)">
+        <div style="color:#9aa4b2;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem;margin:0 0 6px">Eligible next host (hasn’t hosted this year)</div>
+        {% if eligible_pool %}
+          <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:6px 0 2px">
+            {% for b in eligible_pool %}
+              <span style="border:1px solid #2c3444;border-radius:999px;padding:.12rem .5rem;font-size:.9rem;color:#dbe2ea">{{ b.name }}</span>
+            {% endfor %}
+          </div>
+          <div style="color:#a8b0bd;font-size:.92rem">
+            {% if pool_is_strict %}Pick someone on the <a href="{% url 'dashboard' %}" style="color:#c5ddff;text-decoration:none">dashboard</a>.
+            {% else %}Everyone has hosted — new cycle.{% endif %}
+          </div>
+        {% else %}
+          <div style="color:#a8b0bd;font-size:.92rem">Add members/dinners in admin.</div>
+        {% endif %}
+      </div>
+      {% endif %}
+       <div class="card">
+      <div style="background:#151922;border:1px solid #242a36;border-radius:12px;padding:16px 18px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.35)">
+      {% if last_dinner %}
+        <div class="muted" style="color:#dbe2ea">Last dinner: {{ last_dinner.date }} — host {{ last_dinner.host.name }}</div>
+      {% else %}
+        <div class="muted">No dinners recorded yet.</div>
+      {% endif %}
+    </div>
+         </div>
+
+
+      <!-- Link -->
+      <div style="text-align:center;margin-top:2px">
+        <a href="{% url 'dashboard' %}" style="display:inline-block;border:1px solid #2c3444;border-radius:8px;padding:6px 10px;color:#c5ddff;text-decoration:none;font-size:.95rem">
+          Open dashboard →
+        </a>
+      </div>
+
+    </div>
+  </div>
+</body>
